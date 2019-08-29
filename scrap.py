@@ -14,22 +14,26 @@ import argparse
 
 
 file_help = "select csv file(指定csv文件),请不要在路径中包含空格。"
+scale_info = "set image scale  sec per pix,指定尺寸 角秒/像素"
+width_info = "width,宽度"
+height_info = "height,高度"
 
 
 abs_path = os.path.split(os.path.abspath("__file__"))[0]
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--csv", '-c', dest='filename', help=file_help)
-
+parser.add_argument('-c', "--csv", dest='filename',default=os.path.join(abs_path,'starlist.csv'),
+                    help=file_help)
+parser.add_argument('-s', "--scale", dest='scale',default=0.4,help=scale_info)
+parser.add_argument('-W', "--width", dest='width',default=500, help=width_info)
+parser.add_argument('-H', "--height", dest='height',default=400, help=height_info)
 
 csv_arg = parser.parse_args()
 csv_file = csv_arg.filename
-if csv_file == None:
-    print('No file input or input failed, default file has been added in.')
-    csv_file = os.path.join(abs_path,'starlist.csv')
+scale = csv_arg.scale
+width = csv_arg.width
+height = csv_arg.height
     
-scale = 1
-
 
 i = 0
 with open(csv_file, 'r') as file_in:
@@ -39,8 +43,7 @@ with open(csv_file, 'r') as file_in:
         ra, dec = obj[0],obj[1]
         
         print(str(i)+"    ra: "+ra+"   dec: "+dec)
-        width, height = 500, 300
-        url = "http://skyserver.sdss.org/dr12/SkyserverWS/ImgCutout/getjpeg?"+ \
+        url = "http://skyserver.sdss.org/dr14/SkyserverWS/ImgCutout/getjpeg?"+ \
                 "ra="+str(ra)+ \
                 "&dec="+str(dec)+ \
                 "&width="+str(width)+ \
